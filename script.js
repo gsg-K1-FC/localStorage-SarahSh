@@ -72,6 +72,11 @@ function showNotes() {
     editNoteBtn.appendChild(editBtnText);
     editNoteBtn.addEventListener("click",function () {
 
+      
+      if(document.querySelector("#list li.selected") != null)
+        document.querySelector("#list li.selected").classList.remove("selected");
+      
+      
       listItem.classList.add('selected');
 
       let editForm = document.createElement("form"); 
