@@ -1,23 +1,22 @@
 let storedNotes = JSON.parse(localStorage.getItem("notes"));
-console.log(storedNotes);
 let notes = storedNotes ? storedNotes : [];
 let list = document.getElementById("list");
-console.log(notes);
 showNotes();
 
+function isEmptyOrSpaces(str){
+  return str === null || str.match(/^ *$/) !== null;
+}
 document.getElementById("add-btn").addEventListener("click", function () {
   let title = document.getElementById("title").value;
   let description = document.getElementById("description").value;
-  console.log(description, "des");
 
-  if (title === "") {
+  if (isEmptyOrSpaces(title)) {
     alert("pleas enter the title of the note");
   } else {
     notes.push({ title: title, description: description });
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
 
-    console.log(notes, "notes");
     showNotes();
   }
 });
@@ -44,6 +43,7 @@ function showNotes() {
 
   notes.map(function (note, i) {
     let listItem = document.createElement("LI");
+    listItem.setAttribute('id', i);
 
     let divTitle = document.createElement("DIV");
     divTitle.textContent = note.title;
@@ -54,11 +54,8 @@ function showNotes() {
     let deleteNoteBtn = document.createElement("BUTTON");
     let deleteBtnText = document.createTextNode("Delete");
 
-    let editNoteBtn_title = document.createElement("button");
-    let editBtnText_title = document.createTextNode("Edit title");
-
-    let editNoteBtn_desc = document.createElement("button");
-    let editBtnText_desc = document.createTextNode("Edit desc");
+    let editNoteBtn = document.createElement("button");
+    let editBtnText = document.createTextNode("Edit");
 
     deleteNoteBtn.appendChild(deleteBtnText);
     deleteNoteBtn.addEventListener("click", function () {
@@ -72,34 +69,62 @@ function showNotes() {
       }
     });
 
-    editNoteBtn_title.appendChild(editBtnText_title);
-    editNoteBtn_title.addEventListener("click",function editTitle() {
+    editNoteBtn.appendChild(editBtnText);
+    editNoteBtn.addEventListener("click",function () {
 
-      var newTitle = prompt("Edit the Title: ",notes[i].title); 
+      listItem.classList.add('selected');
 
-      if (newTitle === "") {
-        alert("pleas enter the title of the note");
-        editTitle();
-      } else if (newTitle != null) {
-      notes[i].title =newTitle;
-      }  
+      let editForm = document.createElement("form"); 
 
-      showNotes();
-    });
+      let newTitle = document.createElement("input");
+      let placeHolder_title = document.createAttribute("placeholder");
+      placeHolder_title.value = "Edit the title";
+      newTitle.setAttributeNode(placeHolder_title);
 
-    editNoteBtn_desc.appendChild(editBtnText_desc);
-    editNoteBtn_desc.addEventListener("click",function () {
-      var newDescription = prompt("Edit the Description: ",notes[i].description); 
-      if (newDescription != null)
-        notes[i].description =newDescription; 
+      let newDesc = document.createElement("textarea");
+      let placeHolder_desc = document.createAttribute("placeholder");
+      placeHolder_desc.value = "Edit the description";
+      newDesc.setAttributeNode(placeHolder_desc);
+
+      let Submit = document.createElement("button");
+      let submitText = document.createTextNode("Submit");
+      Submit.appendChild(submitText);
+
+      editForm.appendChild(newTitle);
+      editForm.appendChild(newDesc);
+      editForm.appendChild(Submit);
+      listItem.appendChild(editForm);
+
+      Submit.addEventListener("click", function Submit (){
+        selectedId = document.querySelector("#list li.selected").getAttribute("id");
+        
+        notes.map(function (note, i){
+          if(selectedId==i){
+            if (isEmptyOrSpaces(newTitle.value)) {
+              alert("pleas enter the title of the note");
+        } else {
+          note.title= newTitle.value;
+          note.description=newDesc.value;
+        }
+      }
+        });
+        
         showNotes();
-    });
+      },{once:true});
+
+           
+
+      
+
+      
+
+    }, {once: true});
+
 
     listItem.appendChild(divTitle);
     listItem.appendChild(divDescription);
     listItem.appendChild(deleteNoteBtn);
-    listItem.appendChild(editNoteBtn_title);
-    listItem.appendChild(editNoteBtn_desc);
+    listItem.appendChild(editNoteBtn);
 
     list.appendChild(listItem);
   });
