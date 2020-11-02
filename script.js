@@ -72,13 +72,6 @@ function showNotes() {
     editNoteBtn.appendChild(editBtnText);
     editNoteBtn.addEventListener("click",function () {
 
-      
-      if(document.querySelector("#list li.selected") != null)
-        document.querySelector("#list li.selected").classList.remove("selected");
-      
-      
-      listItem.classList.add('selected');
-
       let editForm = document.createElement("form"); 
 
       let newTitle = document.createElement("input");
@@ -101,27 +94,16 @@ function showNotes() {
       listItem.appendChild(editForm);
 
       Submit.addEventListener("click", function Submit (){
-        selectedId = document.querySelector("#list li.selected").getAttribute("id");
         
-        notes.map(function (note, i){
-          if(selectedId==i){
-            if (isEmptyOrSpaces(newTitle.value)) {
+          if (isEmptyOrSpaces(newTitle.value)) {
               alert("pleas enter the title of the note");
         } else {
           note.title= newTitle.value;
           note.description=newDesc.value;
         }
-      }
-        });
         
         showNotes();
       },{once:true});
-
-           
-
-      
-
-      
 
     }, {once: true});
 
